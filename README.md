@@ -13,10 +13,13 @@ Python 3.10 or newer is required. Initial dependency acquisition needs an intern
 Windows PowerShell, from the repository root:
 
 ```powershell
+. .\scripts\Set-ProjectEnvironment.ps1 | Out-Null
 py -3.10 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[test]"
 .\.venv\Scripts\python.exe -m goal_eval run --config examples/synthetic/demo.yaml
 ```
+
+Keep the checkout on **D:**. Run `Set-ProjectEnvironment.ps1` in each new PowerShell terminal **before** creating the virtual environment, installing packages, building, or running tests. It redirects process-local download caches and temporary files to D: and rejects C: storage before those operations. Existing Python/PowerShell executables may be on C:; the new `.venv`, dependencies, downloads and project files stay on D:. It makes no permanent environment or global software changes. See the [Windows local Clef guide](docs/windows-local-clef.md) for the pinned portable model runtime and optional separate D: storage root.
 
 Linux/macOS:
 
@@ -35,6 +38,7 @@ The installed `goal-eval` command is equivalent to `python -m goal_eval`. With t
 Repeat the same run to reuse committed cache successes and regenerate a fresh consistent set of exports. Repeated source records remain separate observations; rescoring identical text does not give it an extra analysis weight or remove its existing weight.
 
 ```powershell
+. .\scripts\Set-ProjectEnvironment.ps1 | Out-Null
 .\.venv\Scripts\goal-eval.exe run --config examples/synthetic/demo.yaml
 .\.venv\Scripts\goal-eval.exe benchmark --config examples/synthetic/demo.yaml --limit 100
 .\.venv\Scripts\python.exe -m pytest -q
@@ -64,6 +68,8 @@ The HTTP adapter sends real SystemOne requests to an already running local Clef 
 
 [Cloudflare's Clef-Flash release](https://huggingface.co/Cloudflare/clef-flash) provides a 9B backbone and joint schema head under Apache-2.0. Its documented reference uses PyTorch 2.11 and Transformers 5.10.2 on an H200. These large optional dependencies and the weights are deliberately not installed by this package. Acquire and pin a complete trusted release separately; follow the release's runtime/serving instructions, bind to loopback and avoid automatic model acquisition during analysis. A hosted endpoint is unsupported because inference must stay local.
 
+For a portable Windows alternative, the [D:-only setup/start scripts](docs/windows-local-clef.md) pin llama.cpp b11669 and the `ggml-org/Clef-Flash-GGUF` Q4_K_M release. This route uses a quantized model and does not require PyTorch, Docker, WSL, new drivers or a global runtime installation. CPU remains the script default; on the tested GTX 1660 Ti 6 GB machine, use the [Vulkan HTTP config](examples/synthetic/clef-vulkan-http.yaml) with 20 GPU layers. Two complete rubric requests returned valid local probabilities in 5.75 and 4.28 seconds. The [CPU HTTP config](examples/synthetic/clef-cpu-http.yaml) also succeeded on the same two requests, taking 52.16 and 48.84 seconds with still tighter memory headroom. These were bounded execution checks, not full-run throughput benchmarks or rating validation. Close other applications and measure headroom before larger jobs. Both use fabricated records and never fall back to demo scoring.
+
 ### Optional direct Python release adapter
 
 An alternative uses the release's `load_release_model(path, device=..., dtype=..., local_files_only=True)` and `systemone(model, processor, request, max_length=...)`. Add these fields to a private config:
@@ -85,7 +91,9 @@ On Windows use a quoted forward-slash path such as `D:/private/weights/clef-flas
 
 CPU operation is an available **configuration path, not verified feasibility**. Nine billion float32 parameters alone require approximately 36 GB before the head, activations, tokenizer and runtime overhead; bfloat16 parameters alone are about 18 GB. Context length and batches increase memory. Actual compatibility, RAM/VRAM fit, throughput and any quantization route require a bounded pilot on the intended computer. No WSL, Docker, GPU or quantized runtime is assumed. The adapter uses one SystemOne request at a time; `batch_size` bounds durable cache commits, while `chunk_size` bounds ingestion/scored-export buffers. It is not GPU tensor batching. Aggregation currently loads projected numeric fields and IDs into memory. The potential 1.2 million records have not been performance-tested; use a pilot and adjust hardware/implementation before a full run.
 
-**Current verification status: local adapter protocol tested; real Clef execution and hardware feasibility unverified.** Fixture servers and the tiny fake local release in tests establish protocol behavior only. They cannot establish model execution or rating quality. Actual Clef inference is the deferred AS-14 gate. See [methods](docs/methods.md) for scoring mathematics and interpretation.
+**Current verification status:** actual local Q4_K_M Clef execution succeeded on this computer using Vulkan and CPU, with two full rubric requests per route and probability validation on all six questions. This establishes bounded runtime feasibility for those pinned quantized routes; CPU was much slower and had less available RAM. Original full-precision Python loading and large-run feasibility remain unverified. Fixture servers and the tiny fake local release in tests establish protocol behavior only; domain accuracy, calibration and cross-year comparability remain unverified for every route. See the [bounded probe details](docs/windows-local-clef.md#observed-bounded-probe-2026-10-23) and [methods](docs/methods.md).
+
+The reviewed Vulkan launcher and full synthetic pipeline also passed together: 823 records completed in 70.38 seconds with 14 new native requests, 581 cache hits and zero inference failures; CSV, Parquet and HTML outputs were verified. The sample repeats many templates, so this is an integration result, not a throughput benchmark for unique goals or a basis for mass-run extrapolation. See [integration details](docs/windows-local-clef.md#complete-synthetic-workflow-integration).
 
 ## Outputs and recovery
 
@@ -102,6 +110,7 @@ The manifest records inputs/fingerprints, resolved config and hash, rubric hash/
 ## Development and public contents
 
 ```powershell
+. .\scripts\Set-ProjectEnvironment.ps1 | Out-Null
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\python.exe -m compileall -q src
 .\.venv\Scripts\python.exe -m build --wheel

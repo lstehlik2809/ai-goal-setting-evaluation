@@ -11,6 +11,9 @@ results/
 cache/
 weights/
 models/
+runtime/
+*.gguf
+*.part
 *.sqlite*
 *.parquet
 *.log

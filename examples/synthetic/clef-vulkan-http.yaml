@@ -1,0 +1,42 @@
+# Real quantized Clef on fabricated CSVs; tested native Vulkan settings.
+# Start-ClefLocal.ps1 -Backend vulkan -GpuLayers 20 before using this config.
+synthetic: true
+seed: 2026
+chunk_size: 8
+batch_size: 1
+missing_values: ['\N']
+output_dir: ../../outputs/clef-vulkan
+cache_path: ../../cache/clef-vulkan-scores.sqlite
+language: {threshold: 0.8, sensitivity_thresholds: [0.5, 0.8, 0.95], min_words: 4, min_letters: 20}
+abstention_threshold: 0.5
+backend:
+  kind: http
+  endpoint: http://127.0.0.1:30000/v1/systemone
+  model: Cloudflare/clef-flash
+  revision: ggml-org/Clef-Flash-GGUF@8aa35d1cc7e141f3771e564eeb630a501597c681
+  timeout: 600
+  retries: 0
+  inference:
+    runtime: llama.cpp-b11669-win-vulkan-x64
+    runtime_archive_sha256: 2c07574e7bde71321cb785282b20cc821e951132149eeceeea32ddebdbf0598e
+    quantization: Q4_K_M
+    model_file: Clef-Flash-Q4_K_M.gguf
+    model_sha256: 3626116623ca8d89641952471fac9ce12af84fb3517520029a2ac6f5146868a2
+    host: 127.0.0.1
+    port: 30000
+    ctx_size: 2048
+    batch_size: 2048
+    ubatch_size: 2048
+    parallel: 1
+    threads: 6
+    n_gpu_layers: 20
+inputs:
+  - year: 2023
+    path: goals-2023.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
+  - year: 2024
+    path: goals-2024.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
+  - year: 2025
+    path: goals-2025.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
