@@ -16,6 +16,7 @@ import pyarrow.parquet as pq
 import yaml
 from . import __version__
 from .analysis import analyze
+from .bayesian import analyze_bayesian
 from .cache import ScoreCache
 from .config import load_config, digest, ConfigError
 from .data import inventory, chunks
@@ -233,6 +234,8 @@ def run_pipeline(config_path, limit=None, benchmark=False):
         projected = [name for name in schema.names if name not in ("title", "description", "combined", "source_sha256", "record_id", "source_row")]
         numeric = pd.read_parquet(run_dir / "scored.parquet", columns=projected)
         tables = analyze(numeric, cfg)
+        bayesian_tables, manifest["bayesian"] = analyze_bayesian(tables["employee_year"], cfg["bayesian"])
+        tables.update(bayesian_tables)
         for name, table in tables.items():
             table.to_csv(run_dir / f"{name}.csv", index=False)
         manifest["coverage"] = tables["coverage"].to_dict(orient="records")

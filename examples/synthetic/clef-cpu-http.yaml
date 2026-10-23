@@ -2,6 +2,12 @@
 # Default paths assume this checkout/storage root is on D:.
 synthetic: true
 seed: 2026
+bayesian:
+  enabled: true
+  draws: 4000
+  credible_mass: 0.95
+  draw_batch_size: 64
+  practical_thresholds: {}  # Seed inherits project seed; default metrics cover nine main measures.
 chunk_size: 8
 batch_size: 1
 missing_values: ['\N']

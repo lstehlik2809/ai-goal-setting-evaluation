@@ -1,6 +1,6 @@
 # Recorded goal text across three years
 
-A local Python pipeline for describing employee goal-setting snapshots from 2023, 2024 and 2025. It measures recorded language and four separate textual qualities, then compares years using equal employee weights. It also proposes goal-setting agent changes as hypotheses to test.
+A local Python pipeline for comparing employee goal-setting snapshots from 2023, 2024 and 2025. It measures recorded language and four separate textual qualities, then compares years using equal employee weights. An employee-cluster Bayesian bootstrap adds conditional credible intervals and directional probabilities. It also proposes goal-setting agent changes as hypotheses to test.
 
 **The checked-in data are entirely synthetic. The demo scorer produces fabricated probabilities, not Clef judgments.** There are no company records, employee attributes or trained weights in this repository.
 
@@ -37,6 +37,8 @@ The installed `goal-eval` command is equivalent to `python -m goal_eval`. With t
 
 Repeat the same run to reuse committed cache successes and regenerate a fresh consistent set of exports. Repeated source records remain separate observations; rescoring identical text does not give it an extra analysis weight or remove its existing weight.
 
+With a complete scoring cache, the same `run` command also regenerates the Bayesian tables and report with the HTTP Clef server **off**: cache hits require no new model calls. A cache miss attempts the configured real backend and fails if that server is unavailable; there is no demo fallback. Changed text, rubric, backend identity or scoring settings may require the real server again. Bayesian-only settings do not change scoring-cache identity.
+
 ```powershell
 . .\scripts\Set-ProjectEnvironment.ps1 | Out-Null
 .\.venv\Scripts\goal-eval.exe run --config examples/synthetic/demo.yaml
@@ -45,6 +47,29 @@ Repeat the same run to reuse committed cache successes and regenerate a fresh co
 ```
 
 The benchmark processes a reproducible input prefix. Its JSON manifest records elapsed time, records/second, process peak resident memory and cache effects. The 1,200,000-record extrapolation is a linear illustration, not a measured full run. **Demo speed is not Clef speed.** A prefix can contain only one year, so its missing annual/pair cohorts are expected. Use a separate cache/output configuration for cold-start or intended-machine benchmarking.
+
+## Bayesian comparisons
+
+Bayesian inference is enabled by default: 4,000 independent posterior draws, 95% equal-tailed credible intervals, seed 2026 (inherited from the run seed unless overridden), and batches of 64 draws. The default nine metrics are the four textual qualities, combined words per goal, combined Flesch Reading Ease and Flesch–Kincaid grade, and timing/strategy `present` probabilities. The primary report compares 2025 minus 2024 for all metric-valid annual employees and for employees valid in both years. Historical 2024 minus 2023 and common-three-year complete-case results remain available in expandable tables. Every cohort has explicit employee counts.
+
+Optional configuration:
+
+```yaml
+bayesian:
+  enabled: true
+  draws: 4000
+  credible_mass: 0.95
+  seed: 2026
+  draw_batch_size: 64
+  # Optional subset; omit to use all nine defaults.
+  metrics: [clarity, specificity, assessability, coherence, combined_words,
+            combined_flesch_ease, combined_fk_grade, timing_present, strategy_present]
+  practical_thresholds: {}  # Optional selected-metric -> positive native-unit threshold.
+```
+
+Set `bayesian.enabled: false` to retain only descriptive comparisons. A credible interval describes uncertainty in a conditional population mean change under the model; it is not the spread of individual goals. `P(change > 0)` is a posterior Monte Carlo estimate, distinct from the Clef probabilities for rubric options. Draw counts, positive-draw counts and Monte Carlo standard errors are exported. A value of zero or one from finite draws does not prove an alternative is impossible. Increases in length, readability or flags are not automatically improvements.
+
+The model treats joint employee trajectories, including observation/eligibility patterns, as exchangeable and conditions on fixed, unvalidated scores and selected groups. If the records form a complete census, recorded means are already known; these intervals express conditional generalization, not uncertainty about those fixed means. They exclude human-rating, calibration, cross-year measurement error, shared manager effects and company-year shocks. They do not identify an AI causal effect. Positive practical thresholds, when supplied, use native metric units and express the user's judgment; no meaningful cutoff is supplied by default. See [the model and its limitations](docs/methods.md#bayesian-employee-cluster-bootstrap).
 
 Regenerate the checked-in 120-employee sample with:
 
@@ -103,9 +128,9 @@ A small ignored `.CONFIG_NAME.goal-eval-state.json` beside a writable config rem
 
 SQLite stores successful validated probability distributions only, keyed by exact text, rubric hash/version, backend, declared model revision, runtime/inference settings and adapter version. Missing/failed inference is never zero and never stored as success. Failures are retried according to `backend.retries`, remain visible by record and make the run fail. Cache commits occur at bounded call batches and chunk completion. A new run rewrites exports rather than appending them.
 
-Outputs include `scored.csv`, `scored.parquet`, employee-year means, annual means and contrasts, paired details/summaries, common-three-year trajectories, coverage, employee overlap, goal counts, goal-score distributions and sensitivities. [The data dictionary](docs/data-dictionary.md) defines their fields. The HTML excludes raw text and employee IDs; CSV/Parquet and caches are private. Console output includes aggregate progress only, and model exceptions are reduced to safe error categories.
+Outputs include `scored.csv`, `scored.parquet`, employee-year means, annual means and contrasts, paired details/summaries, common-three-year trajectories, coverage, employee overlap, goal counts, goal-score distributions, sensitivities, `bayesian_annual.csv` and `bayesian_contrasts.csv`. [The data dictionary](docs/data-dictionary.md) defines their fields. The HTML excludes raw text and employee IDs; CSV/Parquet and caches are private. Console output includes aggregate progress only, and model exceptions are reduced to safe error categories.
 
-The manifest records inputs/fingerprints, resolved config and hash, rubric hash/version, backend/revision, Python/dependency/runtime versions, source hash and Git revision when available, seed, coverage, failures, cache calls/hits, timings and completion status. Config paths and local manifests can themselves be sensitive. Keep them private. The synthetic HTML may be shared after checking it; it contains run/model metadata but no private goal text or IDs.
+The manifest records inputs/fingerprints, resolved config and hash, rubric hash/version, backend/revision, Python/dependency/runtime versions, source hash and Git revision when available, seed, coverage, failures, cache calls/hits, timings and completion status. Its `bayesian` block records model version, effective settings and hash, RNG/seed, employee-cluster unit, status, assumptions and elapsed time. Config paths and local manifests can themselves be sensitive. Keep them private. The synthetic HTML may be shared after checking it; it contains run/model metadata but no private goal text or IDs.
 
 ## Development and public contents
 

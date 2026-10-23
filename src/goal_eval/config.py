@@ -3,6 +3,8 @@ from pathlib import Path
 import copy
 import hashlib
 import json
+import math
+from numbers import Real
 import yaml
 
 
@@ -12,6 +14,41 @@ class ConfigError(ValueError):
 
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()).hexdigest()
+
+
+BAYESIAN_DEFAULT_METRICS = ["clarity", "specificity", "assessability", "coherence", "combined_words",
+                            "combined_flesch_ease", "combined_fk_grade", "timing_present", "strategy_present"]
+
+
+def bayesian_settings(settings, seed=2026):
+    """Validate the complete, deliberately small Bayesian configuration surface."""
+    from .analysis import METRICS
+    if not isinstance(settings, dict):
+        raise ConfigError("bayesian must be a mapping")
+    defaults = {"enabled": True, "draws": 4000, "credible_mass": .95, "seed": seed,
+                "draw_batch_size": 64, "metrics": BAYESIAN_DEFAULT_METRICS, "practical_thresholds": {}}
+    if set(settings) - set(defaults):
+        raise ConfigError("Unknown bayesian option")
+    result = copy.deepcopy({**defaults, **settings})
+    if type(result["enabled"]) is not bool:
+        raise ConfigError("bayesian.enabled must be a boolean")
+    for name, minimum in (("draws", 2), ("draw_batch_size", 1), ("seed", 0)):
+        if type(result[name]) is not int or result[name] < minimum:
+            raise ConfigError(f"bayesian.{name} must be an integer >= {minimum}")
+    mass = result["credible_mass"]
+    if isinstance(mass, bool) or not isinstance(mass, Real) or not math.isfinite(mass) or not 0 < mass < 1:
+        raise ConfigError("bayesian.credible_mass must be finite and lie in (0,1)")
+    metrics = result["metrics"]
+    if (not isinstance(metrics, list) or not metrics or any(not isinstance(m, str) or m not in METRICS for m in metrics)
+            or len(set(metrics)) != len(metrics)):
+        raise ConfigError("bayesian.metrics must be a nonempty list of distinct analysis metrics")
+    thresholds = result["practical_thresholds"]
+    if not isinstance(thresholds, dict) or set(thresholds) - set(metrics):
+        raise ConfigError("bayesian.practical_thresholds must map selected metrics to positive native-unit values")
+    for value in thresholds.values():
+        if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value) or value <= 0:
+            raise ConfigError("Bayesian practical thresholds must be finite and positive")
+    return result
 
 
 def load_config(path):
@@ -24,9 +61,13 @@ def load_config(path):
         raise ConfigError("Configuration must be a mapping")
     cfg = copy.deepcopy(raw)
     cfg["config_path"] = str(path)
-    cfg["config_hash"] = digest(raw)
+    try:
+        cfg["config_hash"] = digest(raw)
+    except (ValueError, TypeError) as exc:
+        raise ConfigError("Configuration must contain finite JSON-compatible values") from exc
     cfg.setdefault("synthetic", False)
     cfg.setdefault("seed", 2026)
+    cfg["bayesian"] = bayesian_settings(cfg.get("bayesian", {}), cfg["seed"])
     cfg.setdefault("chunk_size", 256)
     cfg.setdefault("batch_size", 16)
     cfg.setdefault("missing_values", ["\\N"])

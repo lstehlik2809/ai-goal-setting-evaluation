@@ -1,5 +1,11 @@
 synthetic: true
 seed: 2026
+bayesian:
+  enabled: true
+  draws: 4000
+  credible_mass: 0.95
+  draw_batch_size: 64
+  practical_thresholds: {}  # Optional selected metric -> positive native-unit threshold.
 chunk_size: 128
 batch_size: 8
 missing_values: ['\N']

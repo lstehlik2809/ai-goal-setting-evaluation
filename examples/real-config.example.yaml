@@ -1,5 +1,12 @@
 # Copy this file to an external private directory, then replace paths/revision.
 synthetic: false
+seed: 2026
+bayesian:
+  enabled: true
+  draws: 4000
+  credible_mass: 0.95
+  draw_batch_size: 64
+  practical_thresholds: {}  # Optional positive thresholds in each selected metric's native units.
 output_dir: ./private-results
 cache_path: ./private-cache/scores.sqlite
 chunk_size: 256

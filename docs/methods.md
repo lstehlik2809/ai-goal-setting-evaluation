@@ -1,6 +1,6 @@
-# Measurement and descriptive comparisons
+# Measurement, descriptive comparisons and Bayesian inference
 
-This pipeline examines recorded text, not the full employee–manager negotiation. It preserves original annual snapshots and excludes employee attributes. It does not match individual goals between years or infer employment status from export absence. The 2025–2024 contrast is primary; 2024–2023 supplies historical context. Neither is a causal estimate. No p-values or confidence intervals are invented.
+This pipeline examines recorded text, not the full employee–manager negotiation. It preserves original annual snapshots and excludes employee attributes. It does not match individual goals between years or infer employment status from export absence. The 2025–2024 contrast is primary; 2024–2023 supplies historical context. Neither is a causal estimate. Descriptive comparisons retain their observed values. A separately labeled Bayesian analysis adds conditional credible intervals and posterior directional probabilities; no frequentist significance test is performed.
 
 ## Eligibility and text
 
@@ -40,3 +40,39 @@ Paired 2024–2025 contrasts include employees with a valid employee mean for th
 Other descriptive checks include language, description/readability/scoring coverage; observed/English employee overlap; repeated-text counts; eligible goals per employee; goal-level score distributions; length-band (0–9, 10–29, 30+ words) comparisons; and title-only results. Length sensitivities describe score–length associations and selection; they do not remove measurement bias. Separate title/description/combined annual metrics expose changing export completeness. Repeated text retains every original row and its employee weight while sharing inference cache entries.
 
 Recommendations connect an observed score range to candidate prompt/interaction changes. They are hypotheses for a subsequent evaluation, including separate human/domain validation. They cannot establish that the proposed change improves goal setting or that AI caused any observed year difference. Concurrent organizational changes and company guidance remain unknown limitations.
+
+## Bayesian employee-cluster bootstrap
+
+### Target and assumptions
+
+The inferential target is the mean recorded proxy and its annual change in a hypothetical population of **exchangeable joint employee trajectories**, including their observation, eligibility and metric-missingness patterns. This is a conditional generalization target. If the exports contain the complete population of interest, the finite recorded means are already known: the credible intervals do not describe uncertainty about those fixed census means. Treating employees as exchangeable may be inappropriate when unmodeled team structure, employee selection or organizational processes materially affect their trajectories.
+
+The analysis conditions on fixed Clef scores, formula measurements and eligible groups. It does not incorporate uncertainty about human ratings, calibration, proxy validity or cross-year measurement equivalence. It does not model shared manager effects, company-year shocks, unrecorded goals or unseen types of trajectory. It does not identify a counterfactual AI effect. More draws cannot remove these limitations.
+
+### Posterior construction and cohorts
+
+Following [Rubin's Bayesian bootstrap (1981)](https://people.eecs.berkeley.edu/~jordan/sail/readings/rubin.pdf), assign masses to observed employee trajectories. The limiting zero-concentration/improper prior has density proportional to the product of inverse masses. A multinomial likelihood with one count for each observed employee yields **Dirichlet(1, …, 1) posterior weights**. These are posterior weights, not a uniform-prior specification. No posterior mass is placed on unseen trajectories. The use of employee trajectories as the support is this pipeline's clustering choice.
+
+In every independent draw, generate one positive Exponential(1) weight per employee. Normalized weights have that Dirichlet posterior distribution. Reuse the **same employee weight across all years, metrics and cohorts**. Within each annual metric-valid set, renormalize and take a weighted mean of the employee-year averages of valid eligible goals. Each contrast is the after-year mean minus the before-year mean within the same draw. This preserves dependence from partially overlapping employee sets, and prevents employees with more recorded goals from gaining extra analysis weight.
+
+* `available`: each annual metric uses every employee with a valid mean in that year; sets can differ. The cluster count is their union and overlap is their intersection.
+* `paired`: the same employees must have a valid metric in both contrasted years. This estimates mean change in that selected cohort.
+* `common_three_years`: employees must be observed and metric-valid in 2023, 2024 and 2025. This narrower complete-case cohort is used for both contrasts.
+
+Default inference covers clarity, specificity, assessability, coherence, combined words per goal, combined Flesch Reading Ease, combined Flesch–Kincaid grade, timing `present` probability and strategy `present` probability: 27 annual rows and 54 contrast rows (nine metrics × three cohorts × two contrasts). A configured subset or other supported analysis metrics changes those counts. The main report foregrounds 2025 minus 2024 available/paired results; historical, complete-case, annual and all-metric tables expand on demand. Quality intervals share a symmetric score-point scale. Other measures retain their native units in tables. Increases in length, readability or flags are not automatically improvements.
+
+### Intervals, probabilities and numerical error
+
+Defaults are 4,000 independent draws, 0.95 credible mass, the run seed (2026 by default) and batches of 64. `bayesian.seed` can override the run seed. The PCG64 RNG, settings and settings hash are recorded in `manifest.bayesian`. Batching bounds the draw-by-employee weight buffer; posterior summary arrays remain in memory. No PyMC, MCMC sampling, R-hat or new model dependency is required.
+
+The posterior mean averages the draws. A credible interval uses equal tails: quantiles at `(1 − credible_mass)/2` and `(1 + credible_mass)/2`. It quantifies conditional uncertainty in the **mean**, not the observed range or a prediction interval for individual goals. The report labels the actual configured mass.
+
+`p_increase`, `p_decrease` and `p_zero` are the fractions of draws with change greater than, less than or exactly equal to zero. Exact zero uses numerical equality, not a meaningful-difference band. `positive_draws` and `draws` make the Monte Carlo estimate auditable. `probability_mcse = sqrt(p_increase × (1 − p_increase) / draws)` estimates its numerical Monte Carlo standard error. `mean_mcse = posterior_sd / sqrt(draws)` estimates numerical error in the posterior mean. These MCSEs do not measure model validity or the width of the posterior distribution. A finite-draw probability or plug-in MCSE equal to zero does not prove that unobserved tail outcomes are impossible. Posterior probabilities here concern mean changes; Clef probabilities concern rubric options for a fixed text.
+
+Optional `bayesian.practical_thresholds` maps a selected metric to a **positive native-unit** value `t`. It reports posterior draw fractions `P(change > t)`, `P(−t ≤ change ≤ t)` and `P(change < −t)`. Quality uses score points, words use words per goal, readability uses formula/grade units, and flags use probability points on 0–1 (0.01 equals one percentage point). There is no default practical threshold and no implied validated meaningful cutoff.
+
+An annual estimate requires at least two valid employee clusters. An available contrast requires at least two in each annual set; a paired or complete-case contrast requires at least two in its selected cohort. Otherwise `status=insufficient_clusters`, with no posterior interval or probability. Constant annual values or constant changes give `status=degenerate_empirical_support` and a mathematical point interval. This is a consequence of the empirical-support model, not certainty about unobserved trajectories or measurement error. All-missing metrics remain visible through counts and status.
+
+### Regeneration and provenance
+
+The ordinary `run` command computes inference from the current employee-year summaries; no separate reanalysis command or heavy inference backend is needed. Scoring cache identity excludes Bayesian settings. With a complete cache, rerun the same HTTP configuration with the Clef server off to regenerate the report and tables without new model calls. Any miss still uses the configured real backend and fails if it is unavailable; it never falls back to demo probabilities. Changed inputs or scoring identities can require a live local server. `backend_calls`, `cache_hits` and `manifest.bayesian` distinguish scoring provenance from this run's posterior computation.
