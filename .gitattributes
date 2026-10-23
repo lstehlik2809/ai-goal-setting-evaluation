@@ -1,0 +1,7 @@
+* text=auto eol=lf
+examples/synthetic/report.html linguist-generated=true
+examples/synthetic/scored.csv linguist-generated=true
+examples/synthetic/annual.csv linguist-generated=true
+examples/synthetic/paired.csv linguist-generated=true
+examples/synthetic/coverage.csv linguist-generated=true
+examples/synthetic/manifest.json linguist-generated=true

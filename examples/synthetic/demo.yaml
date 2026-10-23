@@ -1,0 +1,29 @@
+synthetic: true
+seed: 2026
+chunk_size: 128
+batch_size: 8
+missing_values: ['\N']
+output_dir: ../../outputs/synthetic
+cache_path: ../../cache/synthetic.sqlite
+language:
+  threshold: 0.8
+  sensitivity_thresholds: [0.5, 0.8, 0.95]
+  min_words: 4
+  min_letters: 20
+abstention_threshold: 0.5
+backend:
+  kind: demo
+  model: fabricated-probabilities
+  revision: synthetic-demo-v1
+  retries: 1
+  inference: {max_length: 16384}
+inputs:
+  - year: 2023
+    path: goals-2023.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
+  - year: 2024
+    path: goals-2024.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
+  - year: 2025
+    path: goals-2025.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}

@@ -1,0 +1,904 @@
+{
+  "run_id": "20261023T151324Z-70ab039a",
+  "status": "success",
+  "started_utc": "2026-10-23T15:13:24.477193+00:00",
+  "processed_rows": 823,
+  "failed_rows": 0,
+  "inference_failures": 0,
+  "scope": {
+    "kind": "full_inputs",
+    "requested_limit": null,
+    "benchmark": false
+  },
+  "failure_scope_locator_persisted": true,
+  "package_version": "0.1.0",
+  "code_revision": "installed-package",
+  "code_dirty": null,
+  "code_source_sha256": "87972892fe4d4d4c53b77f8f05ac47d1a7adc53a33616479ad0877439dfdc773",
+  "python": "3.10.7",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "synthetic": true,
+  "seed": 2026,
+  "config_sha256": "334fe00fa32d13fb34bfe0a13fcad4e2d37e1184ce0e444f70767185163078fb",
+  "configuration": {
+    "synthetic": true,
+    "seed": 2026,
+    "chunk_size": 128,
+    "batch_size": 8,
+    "missing_values": [
+      "\\N"
+    ],
+    "output_dir": "../../outputs/synthetic",
+    "cache_path": "../../cache/synthetic.sqlite",
+    "language": {
+      "threshold": 0.8,
+      "sensitivity_thresholds": [
+        0.5,
+        0.8,
+        0.95
+      ],
+      "min_words": 4,
+      "min_letters": 20
+    },
+    "abstention_threshold": 0.5,
+    "backend": {
+      "kind": "demo",
+      "model": "fabricated-probabilities",
+      "revision": "synthetic-demo-v1",
+      "retries": 1,
+      "inference": {
+        "max_length": 16384
+      }
+    },
+    "inputs": [
+      {
+        "year": 2023,
+        "path": "goals-2023.csv",
+        "columns": {
+          "employee_id": "employee_id",
+          "title": "goal_name",
+          "description": "goal_description"
+        }
+      },
+      {
+        "year": 2024,
+        "path": "goals-2024.csv",
+        "columns": {
+          "employee_id": "employee_id",
+          "title": "goal_name",
+          "description": "goal_description"
+        }
+      },
+      {
+        "year": 2025,
+        "path": "goals-2025.csv",
+        "columns": {
+          "employee_id": "employee_id",
+          "title": "goal_name",
+          "description": "goal_description"
+        }
+      }
+    ]
+  },
+  "inputs": [
+    {
+      "year": 2023,
+      "sha256": "f968f4c264eb8a20c7659c601aefa8861106f892709746fd97e135818f72bfbe",
+      "bytes": 33461
+    },
+    {
+      "year": 2024,
+      "sha256": "7e41ac1958706ac8394e89526501b34923f2962653e5cadf6109a085c9a2092e",
+      "bytes": 37368
+    },
+    {
+      "year": 2025,
+      "sha256": "5cbd04d7b25d90920aba4d6f0312cdff5e9c0cdddade186f1f8c4e1c25dc98f5",
+      "bytes": 32136
+    }
+  ],
+  "backend": {
+    "kind": "demo",
+    "model": "fabricated-probabilities",
+    "revision": "synthetic-demo-v1",
+    "retries": 1,
+    "inference": {
+      "max_length": 16384
+    },
+    "timeout": 120
+  },
+  "rubric": {
+    "version": "goal-text-rubric-v1",
+    "sha256": "cdc0c16e6d317ceacc9cd0561bec422413def90e9577b37e7d140e0833544473"
+  },
+  "cache_identity": "e693423170450ac3135206c01e21d48bae527df0a4dde2e6e1041834727630c9",
+  "runtime": {
+    "pandas": "2.3.3",
+    "numpy": "2.2.6",
+    "pyarrow": "23.0.1",
+    "langid": "1.1.6",
+    "cmudict": "1.1.3",
+    "PyYAML": "6.0.3"
+  },
+  "limitations": [
+    "Descriptive before-after comparisons; causal AI effect not identified.",
+    "No human validation, calibration or cross-year measurement-equivalence evidence.",
+    "HTTP server model revision, runtime and inference settings are operator-declared; response checks enforce model ID only.",
+    "Scoring streams chunks; aggregation holds numeric columns in memory. Million-row performance has not been tested.",
+    "Demo probabilities are fabricated; real Clef execution and intended-machine feasibility remain unverified."
+  ],
+  "cache_hits": 595,
+  "backend_calls": 0,
+  "coverage": [
+    {
+      "year": 2023,
+      "measure": "input_goals",
+      "count": 256
+    },
+    {
+      "year": 2023,
+      "measure": "observed_employees",
+      "count": 107
+    },
+    {
+      "year": 2023,
+      "measure": "english_goals",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "english_employees",
+      "count": 91
+    },
+    {
+      "year": 2023,
+      "measure": "distinct_combined_texts",
+      "count": 14
+    },
+    {
+      "year": 2023,
+      "measure": "records_in_repeated_text_groups",
+      "count": 256
+    },
+    {
+      "year": 2023,
+      "measure": "english_distinct_combined_texts",
+      "count": 8
+    },
+    {
+      "year": 2023,
+      "measure": "english_repeated_rows_beyond_first",
+      "count": 144
+    },
+    {
+      "year": 2023,
+      "measure": "language_eligible",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "language_insufficient_evidence",
+      "count": 49
+    },
+    {
+      "year": 2023,
+      "measure": "language_non_english",
+      "count": 43
+    },
+    {
+      "year": 2023,
+      "measure": "language_unusable_text",
+      "count": 12
+    },
+    {
+      "year": 2023,
+      "measure": "description_present",
+      "count": 195
+    },
+    {
+      "year": 2023,
+      "measure": "description_blank",
+      "count": 34
+    },
+    {
+      "year": 2023,
+      "measure": "description_missing",
+      "count": 27
+    },
+    {
+      "year": 2023,
+      "measure": "scoring_scored",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "scoring_language_excluded",
+      "count": 104
+    },
+    {
+      "year": 2023,
+      "measure": "valid_clarity",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_specificity",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_assessability",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_coherence",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_characters",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_words",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_sentences",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_bullets",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_mean_word_length",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_mean_sentence_length",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_flesch_ease",
+      "count": 0
+    },
+    {
+      "year": 2023,
+      "measure": "valid_title_fk_grade",
+      "count": 0
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_characters",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_words",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_sentences",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_bullets",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_mean_word_length",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_mean_sentence_length",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_flesch_ease",
+      "count": 123
+    },
+    {
+      "year": 2023,
+      "measure": "valid_description_fk_grade",
+      "count": 123
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_characters",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_words",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_sentences",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_bullets",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_mean_word_length",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_mean_sentence_length",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_flesch_ease",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_combined_fk_grade",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_timing_present",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "valid_strategy_present",
+      "count": 152
+    },
+    {
+      "year": 2023,
+      "measure": "abstained_clarity",
+      "count": 0
+    },
+    {
+      "year": 2023,
+      "measure": "abstained_specificity",
+      "count": 0
+    },
+    {
+      "year": 2023,
+      "measure": "abstained_assessability",
+      "count": 0
+    },
+    {
+      "year": 2023,
+      "measure": "abstained_coherence",
+      "count": 0
+    },
+    {
+      "year": 2024,
+      "measure": "input_goals",
+      "count": 315
+    },
+    {
+      "year": 2024,
+      "measure": "observed_employees",
+      "count": 120
+    },
+    {
+      "year": 2024,
+      "measure": "english_goals",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "english_employees",
+      "count": 100
+    },
+    {
+      "year": 2024,
+      "measure": "distinct_combined_texts",
+      "count": 14
+    },
+    {
+      "year": 2024,
+      "measure": "records_in_repeated_text_groups",
+      "count": 315
+    },
+    {
+      "year": 2024,
+      "measure": "english_distinct_combined_texts",
+      "count": 8
+    },
+    {
+      "year": 2024,
+      "measure": "english_repeated_rows_beyond_first",
+      "count": 162
+    },
+    {
+      "year": 2024,
+      "measure": "language_eligible",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "language_insufficient_evidence",
+      "count": 87
+    },
+    {
+      "year": 2024,
+      "measure": "language_non_english",
+      "count": 41
+    },
+    {
+      "year": 2024,
+      "measure": "language_unusable_text",
+      "count": 17
+    },
+    {
+      "year": 2024,
+      "measure": "description_present",
+      "count": 211
+    },
+    {
+      "year": 2024,
+      "measure": "description_missing",
+      "count": 54
+    },
+    {
+      "year": 2024,
+      "measure": "description_blank",
+      "count": 50
+    },
+    {
+      "year": 2024,
+      "measure": "scoring_scored",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "scoring_language_excluded",
+      "count": 145
+    },
+    {
+      "year": 2024,
+      "measure": "valid_clarity",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_specificity",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_assessability",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_coherence",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_characters",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_words",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_sentences",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_bullets",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_mean_word_length",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_mean_sentence_length",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_flesch_ease",
+      "count": 0
+    },
+    {
+      "year": 2024,
+      "measure": "valid_title_fk_grade",
+      "count": 0
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_characters",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_words",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_sentences",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_bullets",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_mean_word_length",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_mean_sentence_length",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_flesch_ease",
+      "count": 151
+    },
+    {
+      "year": 2024,
+      "measure": "valid_description_fk_grade",
+      "count": 151
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_characters",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_words",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_sentences",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_bullets",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_mean_word_length",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_mean_sentence_length",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_flesch_ease",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_combined_fk_grade",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_timing_present",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "valid_strategy_present",
+      "count": 170
+    },
+    {
+      "year": 2024,
+      "measure": "abstained_clarity",
+      "count": 0
+    },
+    {
+      "year": 2024,
+      "measure": "abstained_specificity",
+      "count": 0
+    },
+    {
+      "year": 2024,
+      "measure": "abstained_assessability",
+      "count": 0
+    },
+    {
+      "year": 2024,
+      "measure": "abstained_coherence",
+      "count": 0
+    },
+    {
+      "year": 2025,
+      "measure": "input_goals",
+      "count": 252
+    },
+    {
+      "year": 2025,
+      "measure": "observed_employees",
+      "count": 110
+    },
+    {
+      "year": 2025,
+      "measure": "english_goals",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "english_employees",
+      "count": 88
+    },
+    {
+      "year": 2025,
+      "measure": "distinct_combined_texts",
+      "count": 14
+    },
+    {
+      "year": 2025,
+      "measure": "records_in_repeated_text_groups",
+      "count": 252
+    },
+    {
+      "year": 2025,
+      "measure": "english_distinct_combined_texts",
+      "count": 8
+    },
+    {
+      "year": 2025,
+      "measure": "english_repeated_rows_beyond_first",
+      "count": 142
+    },
+    {
+      "year": 2025,
+      "measure": "language_eligible",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "language_insufficient_evidence",
+      "count": 47
+    },
+    {
+      "year": 2025,
+      "measure": "language_non_english",
+      "count": 36
+    },
+    {
+      "year": 2025,
+      "measure": "language_unusable_text",
+      "count": 19
+    },
+    {
+      "year": 2025,
+      "measure": "description_present",
+      "count": 186
+    },
+    {
+      "year": 2025,
+      "measure": "description_missing",
+      "count": 35
+    },
+    {
+      "year": 2025,
+      "measure": "description_blank",
+      "count": 31
+    },
+    {
+      "year": 2025,
+      "measure": "scoring_scored",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "scoring_language_excluded",
+      "count": 102
+    },
+    {
+      "year": 2025,
+      "measure": "valid_clarity",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_specificity",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_assessability",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_coherence",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_characters",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_words",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_sentences",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_bullets",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_mean_word_length",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_mean_sentence_length",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_flesch_ease",
+      "count": 0
+    },
+    {
+      "year": 2025,
+      "measure": "valid_title_fk_grade",
+      "count": 0
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_characters",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_words",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_sentences",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_bullets",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_mean_word_length",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_mean_sentence_length",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_flesch_ease",
+      "count": 127
+    },
+    {
+      "year": 2025,
+      "measure": "valid_description_fk_grade",
+      "count": 127
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_characters",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_words",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_sentences",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_bullets",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_mean_word_length",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_mean_sentence_length",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_flesch_ease",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_combined_fk_grade",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_timing_present",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "valid_strategy_present",
+      "count": 150
+    },
+    {
+      "year": 2025,
+      "measure": "abstained_clarity",
+      "count": 0
+    },
+    {
+      "year": 2025,
+      "measure": "abstained_specificity",
+      "count": 0
+    },
+    {
+      "year": 2025,
+      "measure": "abstained_assessability",
+      "count": 0
+    },
+    {
+      "year": 2025,
+      "measure": "abstained_coherence",
+      "count": 0
+    }
+  ],
+  "elapsed_seconds": 3.417866200001299,
+  "peak_process_rss_mb": 213.32421875,
+  "records_per_second": 240.79351029004212,
+  "completed_utc": "2026-10-23T15:13:27.961445+00:00",
+  "public_example_note": "Synthetic example only. Absolute execution paths omitted; configuration retains original relative paths. Regenerate current results using the README quickstart."
+}

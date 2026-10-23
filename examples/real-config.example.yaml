@@ -1,0 +1,28 @@
+# Copy this file to an external private directory, then replace paths/revision.
+synthetic: false
+output_dir: ./private-results
+cache_path: ./private-cache/scores.sqlite
+chunk_size: 256
+batch_size: 16
+missing_values: ['\N']
+language: {threshold: 0.8, sensitivity_thresholds: [0.5, 0.8, 0.95], min_words: 4, min_letters: 20}
+abstention_threshold: 0.5
+backend:
+  kind: http
+  endpoint: http://127.0.0.1:30000/v1/systemone
+  model: Cloudflare/clef-flash
+  revision: REPLACE_WITH_IMMUTABLE_LOCAL_RELEASE_REVISION
+  timeout: 120
+  retries: 1
+  # HTTP runtime settings must be applied to the local server by the operator.
+  inference: {max_length: 16384}
+inputs:
+  - year: 2023
+    path: ./private-inputs/goals-2023.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
+  - year: 2024
+    path: ./private-inputs/goals-2024.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
+  - year: 2025
+    path: ./private-inputs/goals-2025.csv
+    columns: {employee_id: employee_id, title: goal_name, description: goal_description}
